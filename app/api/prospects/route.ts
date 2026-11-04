@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {db} from '@/lib/supabase';
+export async function POST(r:Request){try{const b=await r.json();if(!b.full_name||!b.phone||!b.privacy)return NextResponse.json({error:'Datos requeridos incompletos'},{status:400});const {error}=await db().from('prospects').insert({full_name:b.full_name,phone:b.phone,email:b.email||null,comments:b.comments||null,privacy_accepted_at:new Date().toISOString()});if(error)throw error;return NextResponse.json({ok:true});}catch(e:any){return NextResponse.json({error:e.message},{status:500})}}

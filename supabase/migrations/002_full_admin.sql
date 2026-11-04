@@ -1,0 +1,10 @@
+alter table site_settings add column if not exists logo_url text;
+alter table site_settings add column if not exists background_color text default '#ffffff';
+alter table site_settings add column if not exists privacy_text text default 'Autorizo el tratamiento de mis datos personales de acuerdo con la política de tratamiento de información.';
+alter table site_settings add column if not exists privacy_version text default '1.0';
+alter table site_settings add column if not exists privacy_required boolean default true;
+alter table site_settings add column if not exists hero_autoplay boolean default true;
+alter table offices add column if not exists phone text;
+alter table offices add column if not exists hours text;
+alter table prospects add column if not exists updated_at timestamptz default now();
+insert into storage.buckets (id,name,public) values ('public-assets','public-assets',true) on conflict (id) do update set public=true;

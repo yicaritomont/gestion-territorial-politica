@@ -1,0 +1,27 @@
+-- Ejecutar después de 001, 002 y 003.
+alter table public.site_settings add column if not exists button_color text not null default '#512b81';
+alter table public.site_settings add column if not exists button_text_color text not null default '#ffffff';
+alter table public.site_settings add column if not exists button_hover_color text not null default '#402266';
+alter table public.site_settings add column if not exists link_color text not null default '#512b81';
+alter table public.site_settings add column if not exists heading_color text not null default '#1f2430';
+alter table public.site_settings add column if not exists text_color text not null default '#1f2430';
+alter table public.site_settings add column if not exists muted_color text not null default '#6b7280';
+alter table public.site_settings add column if not exists surface_color text not null default '#ffffff';
+alter table public.site_settings add column if not exists card_color text not null default '#ffffff';
+alter table public.site_settings add column if not exists border_color text not null default '#e5e7eb';
+alter table public.site_settings add column if not exists badge_background_color text not null default '#eee7f8';
+alter table public.site_settings add column if not exists badge_text_color text not null default '#512b81';
+alter table public.site_settings add column if not exists sidebar_color text not null default '#21182c';
+alter table public.site_settings add column if not exists sidebar_text_color text not null default '#ffffff';
+alter table public.site_settings add column if not exists footer_color text not null default '#17131e';
+alter table public.site_settings add column if not exists footer_text_color text not null default '#eeeeee';
+alter table public.site_settings add column if not exists success_color text not null default '#237a45';
+alter table public.site_settings add column if not exists success_background_color text not null default '#e8f7ee';
+alter table public.site_settings add column if not exists warning_color text not null default '#8a6414';
+alter table public.site_settings add column if not exists warning_background_color text not null default '#fff4d8';
+alter table public.site_settings add column if not exists error_color text not null default '#b42318';
+alter table public.site_settings add column if not exists error_background_color text not null default '#fff0ef';
+alter table public.site_settings add column if not exists hero_end_color text not null default '#eee7f8';
+alter table public.site_settings add column if not exists hero_card_end_color text not null default '#8a63b8';
+alter table public.site_settings add column if not exists info_background_color text not null default '#f7f3fb';
+alter table public.site_settings add column if not exists info_text_color text not null default '#5f4a72';

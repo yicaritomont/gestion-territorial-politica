@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {db} from '@/lib/supabase';
+export async function POST(r:Request){try{const b=await r.json();const {data,error}=await db().from('meetings').insert({name:b.name,meeting_date:b.date,meeting_time:b.time||null,commune_id:b.commune_id||null,neighborhood:b.neighborhood||null,place:b.place||null,status:b.status||'ABIERTA',allow_qr:b.allow_qr!==false}).select().single();if(error)throw error;return NextResponse.json(data);}catch(e:any){return NextResponse.json({error:e.message},{status:500})}}

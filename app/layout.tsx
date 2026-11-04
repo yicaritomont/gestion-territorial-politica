@@ -1,0 +1,15 @@
+import './globals.css';
+import type {CSSProperties, ReactNode} from 'react';
+import {configured,db} from '@/lib/supabase';
+export const metadata={title:'Territorio | Gestión',description:'Plataforma de gestión territorial'};
+export const dynamic='force-dynamic';
+const defaults:Record<string,string> = {"primary_color": "#512b81", "secondary_color": "#f7eef5", "accent_color": "#d4af37", "background_color": "#f6f7fb", "button_color": "#512b81", "button_text_color": "#ffffff", "button_hover_color": "#402266", "link_color": "#512b81", "heading_color": "#1f2430", "text_color": "#1f2430", "muted_color": "#6b7280", "surface_color": "#ffffff", "card_color": "#ffffff", "border_color": "#e5e7eb", "badge_background_color": "#eee7f8", "badge_text_color": "#512b81", "sidebar_color": "#21182c", "sidebar_text_color": "#ffffff", "footer_color": "#17131e", "footer_text_color": "#eeeeee", "success_color": "#237a45", "success_background_color": "#e8f7ee", "warning_color": "#8a6414", "warning_background_color": "#fff4d8", "error_color": "#b42318", "error_background_color": "#fff0ef", "hero_end_color": "#eee7f8", "hero_card_end_color": "#8a63b8", "info_background_color": "#f7f3fb", "info_text_color": "#5f4a72"};
+const mapping:Record<string,string> = {"primary_color": "--theme-primary", "secondary_color": "--theme-secondary", "accent_color": "--theme-accent", "background_color": "--theme-background", "button_color": "--theme-button", "button_text_color": "--theme-button-text", "button_hover_color": "--theme-button-hover", "link_color": "--theme-link", "heading_color": "--theme-heading", "text_color": "--theme-text", "muted_color": "--theme-muted", "surface_color": "--theme-surface", "card_color": "--theme-card", "border_color": "--theme-border", "badge_background_color": "--theme-badge-background", "badge_text_color": "--theme-badge-text", "sidebar_color": "--theme-sidebar", "sidebar_text_color": "--theme-sidebar-text", "footer_color": "--theme-footer", "footer_text_color": "--theme-footer-text", "success_color": "--theme-success", "success_background_color": "--theme-success-background", "warning_color": "--theme-warning", "warning_background_color": "--theme-warning-background", "error_color": "--theme-error", "error_background_color": "--theme-error-background", "hero_end_color": "--theme-hero-end", "hero_card_end_color": "--theme-hero-card-end", "info_background_color": "--theme-info-background", "info_text_color": "--theme-info-text"};
+const valid=(value:unknown,fallback:string)=>typeof value==='string' && /^#[0-9a-fA-F]{6}$/.test(value)?value:fallback;
+export default async function RootLayout({children}:{children:ReactNode}){
+  let settings:Record<string,unknown>={};
+  if(configured()){try{const result=await db().from('site_settings').select('*').eq('id',1).maybeSingle();settings=result.data||{};}catch{}}
+  const variables:Record<string,string>={};
+  for(const [column,variable] of Object.entries(mapping))variables[variable]=valid(settings[column],defaults[column]);
+  return <html lang="es"><body style={variables as CSSProperties}>{children}</body></html>;
+}
