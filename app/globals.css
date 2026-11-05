@@ -37,3 +37,15 @@ a:hover{color:var(--theme-link)}
 .themeSwatch{width:28px;height:28px;border-radius:7px;border:1px solid var(--theme-border);display:inline-block}
 
 .cta,.cta p,.cta h2{color:var(--theme-button-text)}
+
+.heroCard{height:auto;min-height:380px;min-width:0;align-items:stretch;gap:24px}
+.heroCard>.heroImage{flex:0 1 44%;width:44%;height:324px;max-height:none;min-width:0;border-radius:16px;object-position:center}
+.heroCard>div{flex:1;min-width:0;align-self:center;overflow-wrap:anywhere}
+.heroCard p{color:inherit;font-size:16px}
+
+@media(max-width:800px){
+  .heroCard{min-height:0;flex-direction:column;gap:0;padding:16px}
+  .heroCard>.heroImage{flex:none;width:100%;height:clamp(180px,55vw,300px);margin-bottom:18px}
+  .heroCard>div{width:100%}
+  .heroCard h2{font-size:clamp(1.4rem,5vw,2rem)}
+}
