@@ -1,2 +1,36 @@
-import {NextResponse} from 'next/server';import {db} from '@/lib/supabase';
-export async function POST(r:Request){try{const b=await r.json();const {data,error}=await db().from('commitments').insert({leader_id:b.leader_id,meeting_id:b.meeting_id||null,description:b.description,status:b.status||'ABIERTO',due_date:b.due_date||null}).select().single();if(error)throw error;return NextResponse.json(data);}catch(e:any){return NextResponse.json({error:e.message},{status:500})}}
+import {NextResponse} from 'next/server';
+import {db} from '@/lib/supabase';
+
+export async function POST(request:Request){
+  try{
+    const body=await request.json();
+    const leaderId=typeof body.leader_id==='string'?body.leader_id.trim():'';
+    const description=typeof body.description==='string'?body.description.trim():'';
+    const meetingId=typeof body.meeting_id==='string'?body.meeting_id.trim():'';
+    const dueDate=typeof body.due_date==='string'?body.due_date.trim():'';
+    if(!leaderId)return NextResponse.json({error:'Selecciona el líder responsable.'},{status:400});
+    if(!description)return NextResponse.json({error:'Escribe la descripción del compromiso.'},{status:400});
+
+    const supabase=db();
+    const {data:leader,error:leaderError}=await supabase.from('people')
+      .select('id')
+      .eq('id',leaderId)
+      .eq('validated_leader',true)
+      .maybeSingle();
+    if(leaderError)throw leaderError;
+    if(!leader)return NextResponse.json({error:'El líder seleccionado no está confirmado.'},{status:400});
+
+    const {data,error}=await supabase.from('commitments').insert({
+      leader_id:leaderId,
+      meeting_id:meetingId||null,
+      description,
+      status:'ABIERTO',
+      due_date:dueDate||null
+    }).select().single();
+    if(error)throw error;
+    return NextResponse.json(data,{status:201});
+  }catch(error){
+    const message=error instanceof Error?error.message:'No se pudo crear el compromiso.';
+    return NextResponse.json({error:message},{status:500});
+  }
+}

@@ -24,7 +24,8 @@ export async function middleware(req:NextRequest){
  if(error||!profile?.active){return NextResponse.json({error:'Usuario sin acceso habilitado'},{status:403});}
  const role=profile.role;
  const adminOnly=isProtectedApi&&(path.startsWith('/api/admin/')||path.startsWith('/api/people/')||req.method==='PUT'||req.method==='DELETE');
- const adminPageRestricted=isAdminPage&&role!=='admin'&&!(path==='/admin'||path.startsWith('/admin/reuniones')||path.startsWith('/admin/compromisos'));
+ const adminOnlyAttendance=/^\/admin\/reuniones\/[^/]+\/asistencia$/.test(path);
+ const adminPageRestricted=isAdminPage&&role!=='admin'&&(adminOnlyAttendance||!(path==='/admin'||path.startsWith('/admin/reuniones')||path.startsWith('/admin/compromisos')));
  if((adminOnly&&role!=='admin')||adminPageRestricted){return NextResponse.json({error:'Acceso exclusivo de administrador'},{status:403});}
  const res=NextResponse.next();
  if(rotated){res.cookies.set(accessName,rotated.access_token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:rotated.expires_in});res.cookies.set(refreshName,rotated.refresh_token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:60*60*24*30});}
