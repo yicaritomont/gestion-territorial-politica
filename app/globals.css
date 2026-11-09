@@ -49,3 +49,29 @@ a:hover{color:var(--theme-link)}
   .heroCard>div{width:100%}
   .heroCard h2{font-size:clamp(1.4rem,5vw,2rem)}
 }
+
+.adminCalendar{margin-top:24px}
+.calendarHeader,.calendarMonthControls{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.calendarHeader{margin-bottom:18px}
+.calendarHeader h2,.calendarAgenda h3{margin:0 0 6px}
+.calendarMonthControls strong{text-transform:capitalize;min-width:150px;text-align:center}
+.calendarLayout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr);gap:20px}
+.calendarGrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--theme-border);border-left:1px solid var(--theme-border);border-radius:10px;overflow:hidden}
+.calendarWeekday{padding:10px 6px;text-align:center;font-size:13px;font-weight:700;color:var(--theme-muted);background:var(--theme-surface);border-right:1px solid var(--theme-border);border-bottom:1px solid var(--theme-border)}
+.calendarDay{min-width:0;min-height:100px;padding:8px;text-align:left;vertical-align:top;background:var(--theme-card);color:var(--theme-text);border:0;border-right:1px solid var(--theme-border);border-bottom:1px solid var(--theme-border);cursor:pointer}
+.calendarDay:hover,.calendarDay.selected{background:var(--theme-secondary)}
+.calendarDay.today .calendarDayNumber{display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--theme-primary);color:var(--theme-button-text)}
+.calendarDay.outside{color:var(--theme-muted);opacity:.62}
+.calendarDayNumber{font-size:13px;font-weight:700}
+.calendarDayEvents{display:grid;gap:4px;margin-top:6px}
+.calendarEvent{overflow:hidden;padding:4px 5px;border-radius:5px;background:var(--theme-badge-background);color:var(--theme-badge-text);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.calendarMore{font-size:11px;color:var(--theme-muted)}
+.calendarAgenda{padding:16px;border:1px solid var(--theme-border);border-radius:12px;background:var(--theme-surface)}
+.calendarAgenda .sectionHead{align-items:center;margin-bottom:14px}
+.calendarAgenda .sectionHead p{margin:0;text-transform:capitalize}
+.agendaList{list-style:none;padding:0;margin:0}
+.agendaList li{display:grid;grid-template-columns:85px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--theme-border)}
+.agendaTime{font-weight:700;color:var(--theme-link)}
+.agendaList li p{margin:5px 0;color:var(--theme-muted);font-size:13px}
+@media(max-width:1050px){.calendarLayout{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:18px}.calendarHeader{align-items:flex-start;flex-direction:column}.calendarMonthControls{width:100%;gap:8px}.calendarMonthControls strong{flex:1;min-width:0}.calendarDay{min-height:82px;padding:5px 3px}.calendarEvent{font-size:10px;padding:3px}.calendarWeekday{font-size:11px;padding:8px 2px}.calendarAgenda{padding:12px}}
