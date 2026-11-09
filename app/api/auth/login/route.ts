@@ -7,7 +7,7 @@ export async function POST(req:Request){
  const {data,error}=await client.auth.signInWithPassword({email,password});
  if(error||!data.user||!data.session)return NextResponse.json({error:'Credenciales incorrectas'},{status:401});
  const {data:profile}=await client.from('app_users').select('role,active').eq('user_id',data.user.id).maybeSingle();
- if(!profile?.active||!['admin','facilitator'].includes(profile.role))return NextResponse.json({error:'Cuenta sin permiso de acceso'},{status:403});
+ if(!profile?.active||!['admin','facilitator','superuser'].includes(profile.role))return NextResponse.json({error:'Cuenta sin permiso de acceso'},{status:403});
  const res=NextResponse.json({ok:true,role:profile.role});
  const opt={httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax' as const,path:'/'};
  res.cookies.set('gt_access',data.session.access_token,{...opt,maxAge:data.session.expires_in});

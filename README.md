@@ -64,9 +64,11 @@ select id,'admin',true from auth.users where email='TU_CORREO_ADMIN@EJEMPLO.COM'
 on conflict (user_id) do update set role='admin',active=true;
 ```
 
-4. Abre `/admin/login` e inicia sesión. Para facilitadores crea otro usuario desde Authentication y registra su rol con `role='facilitator'` en `app_users`.
-5. Usa `NEXT_PUBLIC_SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` **solo en las variables de entorno del servidor**; no pongas la clave secreta en ninguna variable `NEXT_PUBLIC_`. Configura ambas en Vercel para Production y Preview según corresponda.
-6. En Vercel importa el repositorio GitLab y selecciona Next.js; ejecuta `npm run build` antes del despliegue.
+4. Después de las migraciones 001–004, ejecuta `supabase/migrations/005_superuser_role.sql` y asigna `role='superuser'` a una cuenta existente en `app_users`. Ese usuario podrá crear cuentas de administrador y facilitador desde `/admin/usuarios`; no se permite el registro público.
+5. Ejecuta `supabase/migrations/006_delete_audit.sql` y luego `supabase/migrations/007_admin_record_deletion.sql`. Solo las cuentas con rol `superuser` pueden borrar contenido, personas, reuniones, aspirantes y compromisos desde el panel. Antes de borrar, el sistema muestra una confirmación con los efectos relacionados; cada eliminación se registra de forma transaccional, conservando el usuario, fecha, tabla y copia del registro eliminado. Al borrar una persona o reunión, las asistencias se eliminan y los compromisos asociados se conservan sin esa relación. Consulta el historial en **Registro de borrados** desde el panel.
+6. Abre `/admin/login` e inicia sesión. Los usuarios existentes conservan sus roles y permisos.
+7. Usa `NEXT_PUBLIC_SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` **solo en las variables de entorno del servidor**; no pongas la clave secreta en ninguna variable `NEXT_PUBLIC_`. Configura ambas en Vercel para Production y Preview según corresponda.
+8. En Vercel importa el repositorio GitLab y selecciona Next.js; ejecuta `npm run build` antes del despliegue.
 
 **Seguridad:** el middleware valida sesión y rol en `/admin` y las APIs administrativas. Las rutas públicas `/api/attendance` y `/api/prospects` permanecen accesibles sin login y deben incorporar limitación de frecuencia, protección antispam y controles adicionales antes de captar datos personales reales. El flujo de autorización de facilitadores aún debe validarse funcionalmente con cuentas de ambos roles. No se ha ejecutado un build completo en este entorno (dependencias npm no disponibles).
 

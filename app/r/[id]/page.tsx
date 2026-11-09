@@ -26,7 +26,7 @@ async function getAdminBackHref(meetingToken:string){
     .maybeSingle();
   if(error)throw error;
 
-  return profile?.active&&profile.role==='admin'
+  return profile?.active&&(profile.role==='admin'||profile.role==='superuser')
     ?`/admin/reuniones/${meetingToken}`
     :'/';
 }

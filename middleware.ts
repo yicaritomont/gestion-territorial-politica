@@ -23,11 +23,25 @@ export async function middleware(req:NextRequest){
  const {data:profile,error}=await s.from('app_users').select('role,active').eq('user_id',user.id).maybeSingle();
  if(error||!profile?.active){return NextResponse.json({error:'Usuario sin acceso habilitado'},{status:403});}
  const role=profile.role;
+ const isPrivileged=role==='admin'||role==='superuser';
  const adminOnly=isProtectedApi&&(path.startsWith('/api/admin/')||path.startsWith('/api/people/')||req.method==='PUT'||req.method==='DELETE');
  const adminOnlyAttendance=/^\/admin\/reuniones\/[^/]+\/asistencia$/.test(path);
- const adminPageRestricted=isAdminPage&&role!=='admin'&&(adminOnlyAttendance||!(path==='/admin'||path.startsWith('/admin/reuniones')||path.startsWith('/admin/compromisos')));
- if((adminOnly&&role!=='admin')||adminPageRestricted){return NextResponse.json({error:'Acceso exclusivo de administrador'},{status:403});}
- const res=NextResponse.next();
+ const usersOnly=path==='/admin/usuarios'||path.startsWith('/api/admin/users');
+ const auditOnly=path==='/admin/auditoria'||path.startsWith('/api/admin/audit');
+ const superuserOnly=(path==='/api/meetings'&&req.method==='PUT')
+  ||(path==='/api/commitments'&&req.method==='PUT')
+  ||(/^\/api\/people\/[^/]+$/.test(path)&&req.method==='PUT')
+  ||auditOnly;
+ const adminPageRestricted=isAdminPage&&!isPrivileged&&(adminOnlyAttendance||!(path==='/admin'||path.startsWith('/admin/reuniones')||path.startsWith('/admin/compromisos')));
+ const deleteOnly=isProtectedApi&&req.method==='DELETE';
+ if((adminOnly&&!isPrivileged)||(adminPageRestricted)||((usersOnly||superuserOnly||deleteOnly)&&role!=='superuser')){return NextResponse.json({error:'Acceso exclusivo de superusuario'},{status:403});}
+ const forwardedHeaders=new Headers(req.headers);
+ forwardedHeaders.set('x-app-role',role);
+ forwardedHeaders.set('x-app-user-id',user.id);
+ forwardedHeaders.set('x-app-user-email',user.email||'');
+ const metadataName=user.user_metadata?.full_name||user.user_metadata?.name;
+ forwardedHeaders.set('x-app-user-name',typeof metadataName==='string'&&metadataName.trim()?metadataName.trim():user.email||'Usuario');
+ const res=NextResponse.next({request:{headers:forwardedHeaders}});
  if(rotated){res.cookies.set(accessName,rotated.access_token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:rotated.expires_in});res.cookies.set(refreshName,rotated.refresh_token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:60*60*24*30});}
  return res;
 }

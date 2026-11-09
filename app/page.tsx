@@ -120,13 +120,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <section className="section cta">
-        <h2>¿Ya sabes dónde votas?</h2>
-        <p>Consulta tu puesto y mesa de votación.</p>
-        <a className="btn alt" href={settings?.electoral_url || "#"} target="_blank" rel="noopener noreferrer">
-          Verificar aquí →
-        </a>
-      </section>
       <footer id="sedes" className="footer">
         <h2>Sedes y redes sociales</h2>
         {offices.map((o: any) => (
